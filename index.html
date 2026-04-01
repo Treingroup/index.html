@@ -3,1115 +3,356 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daccapo – Configura il tuo bagno</title>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Partner Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-/* ─── TOKENS ─── */
-:root{
-  --n0:#0B1929;--n1:#0F2040;--n2:#1A3560;--n3:#243f73;--n4:#2e54a0;
-  --or:#E8611A;--orh:#C94E0C;--orl:#FF8040;--orp:#FFF3EC;--ory:#FFE8D6;
-  --w:#fff;--off:#F4F6FA;--gl:#E6EBF4;--gm:#8A95A8;--gd:#4A5568;--tx:#1C2233;
-  --bd:#DDE2EC;
-  --r8:8px;--r12:12px;--r16:16px;--r24:24px;--rpill:100px;
-  --green:#16A34A;--greenl:#DCFCE7;
-}
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;}
-body{font-family:'Barlow',sans-serif;background:var(--n1);color:var(--tx);min-height:100vh;display:flex;flex-direction:column;}
-
-/* ─── AMBIENT ─── */
-.ambient{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;}
-.ab{position:absolute;border-radius:50%;filter:blur(90px);opacity:.22;animation:drift 20s ease-in-out infinite alternate;}
-.ab:nth-child(1){width:700px;height:700px;background:var(--n4);top:-250px;left:-150px;animation-delay:0s;}
-.ab:nth-child(2){width:450px;height:450px;background:var(--or);bottom:-180px;right:-100px;opacity:.09;animation-delay:-7s;}
-.ab:nth-child(3){width:320px;height:320px;background:var(--n3);top:45%;right:8%;opacity:.13;animation-delay:-14s;}
-@keyframes drift{0%{transform:translate(0,0) scale(1)}100%{transform:translate(35px,25px) scale(1.1)}}
-
-/* ─── TOPBAR ─── */
-.topbar{position:relative;z-index:20;background:rgba(11,25,41,.88);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07);padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
-.logo{display:flex;align-items:center;gap:9px;text-decoration:none;}
-.logo-mark{width:32px;height:32px;background:var(--or);border-radius:7px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(232,97,26,.4);}
-.logo-mark svg{width:17px;height:17px;fill:#fff;}
-.logo-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#fff;line-height:1;}
-.logo-name em{color:var(--or);font-style:normal;}
-.topbar-tel{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.45);font-size:13px;font-weight:500;text-decoration:none;transition:color .2s;padding:7px 14px;border:1px solid rgba(255,255,255,.1);border-radius:var(--rpill);}
-.topbar-tel:hover{color:var(--or);border-color:rgba(232,97,26,.4);}
-.topbar-tel svg{width:13px;height:13px;fill:var(--or);}
-
-/* ─── PRICE WIDGET ─── */
-.pw{
-  position:relative;z-index:15;
-  background:rgba(11,25,41,.92);backdrop-filter:blur(20px);
-  border-bottom:1px solid rgba(232,97,26,.2);
-  padding:10px 28px;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  flex-wrap:wrap;
-  transition:all .4s;
-}
-.pw-left{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
-.pw-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.35);}
-.pw-price{
-  font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;
-  color:var(--or);letter-spacing:-.01em;line-height:1;
-  transition:all .35s cubic-bezier(.34,1.56,.64,1);
-}
-.pw-price.bump{transform:scale(1.08);color:var(--orl);}
-.pw-base{font-size:11px;color:rgba(255,255,255,.3);font-weight:500;}
-.pw-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-.pw-rate{
-  background:rgba(232,97,26,.12);border:1px solid rgba(232,97,26,.25);
-  border-radius:var(--rpill);padding:5px 12px;
-  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
-  letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.7);
-  cursor:pointer;transition:all .2s;
-}
-.pw-rate.active,.pw-rate:hover{background:var(--or);border-color:var(--or);color:#fff;}
-.pw-monthly{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;white-space:nowrap;}
-.pw-monthly span{font-size:11px;color:rgba(255,255,255,.4);font-weight:500;}
-
-/* ─── MAIN ─── */
-.main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;padding:28px 16px 60px;}
-
-/* ─── CARD ─── */
-.card{width:100%;max-width:640px;background:var(--w);border-radius:24px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08);}
-
-/* ─── PROGRESS ─── */
-.phead{background:var(--n2);padding:0;}
-.pbar-track{height:4px;background:rgba(255,255,255,.08);}
-.pbar-fill{height:100%;background:linear-gradient(90deg,var(--or),var(--orl));border-radius:0 2px 2px 0;transition:width .6s cubic-bezier(.4,0,.2,1);}
-.pmeta{padding:14px 28px;display:flex;align-items:center;justify-content:space-between;}
-.pmeta-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.35);}
-.pmeta-step{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--or);display:flex;align-items:center;gap:6px;}
-.step-dots{display:flex;gap:5px;}
-.step-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.15);transition:all .3s;}
-.step-dot.done{background:var(--or);opacity:.55;}
-.step-dot.cur{background:var(--or);transform:scale(1.35);}
-
-/* ─── STEPS ─── */
-.step{display:none;padding:28px 28px 32px;}
-.step.active{display:block;animation:stepIn .3s cubic-bezier(.4,0,.2,1);}
-.step.back{animation:stepBack .3s cubic-bezier(.4,0,.2,1);}
-@keyframes stepIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
-@keyframes stepBack{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
-
-.eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--or);margin-bottom:5px;display:flex;align-items:center;gap:7px;}
-.eyebrow::before{content:'';width:10px;height:2px;background:var(--or);border-radius:2px;flex-shrink:0;}
-.q{font-family:'Barlow Condensed',sans-serif;font-size:clamp(22px,4.5vw,30px);font-weight:900;text-transform:uppercase;letter-spacing:-.01em;color:var(--n2);line-height:1.05;margin-bottom:5px;}
-.hint{font-size:13px;color:var(--gm);font-weight:500;line-height:1.6;margin-bottom:18px;}
-
-/* ─── PATH CARDS ─── */
-.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.path-card{border:2px solid var(--bd);border-radius:var(--r16);padding:22px 16px 18px;cursor:pointer;transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center;background:var(--w);user-select:none;position:relative;overflow:hidden;}
-.path-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(232,97,26,.06),transparent);opacity:0;transition:opacity .2s;}
-.path-card:hover{border-color:var(--or);transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,97,26,.14);}
-.path-card:hover::after,.path-card.sel::after{opacity:1;}
-.path-card.sel{border-color:var(--or);background:var(--orp);box-shadow:0 0 0 4px rgba(232,97,26,.1);}
-.path-ico{font-size:38px;line-height:1;filter:drop-shadow(0 2px 4px rgba(0,0,0,.1));}
-.path-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.02em;color:var(--n2);line-height:1.1;transition:color .2s;}
-.path-card:hover .path-title,.path-card.sel .path-title{color:var(--orh);}
-.path-sub{font-size:11px;color:var(--gm);font-weight:500;line-height:1.4;}
-.path-price{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--or);letter-spacing:.02em;margin-top:2px;}
-
-/* ─── OPTIONS ─── */
-.opts{display:flex;flex-direction:column;gap:8px;}
-.opts.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
-.opt{border:2px solid var(--bd);border-radius:var(--r12);padding:13px 15px;cursor:pointer;transition:border-color .2s,background .2s,transform .15s,box-shadow .2s;display:flex;align-items:center;gap:11px;user-select:none;background:var(--w);position:relative;overflow:hidden;}
-.opt::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--or);transform:scaleY(0);transform-origin:bottom;transition:transform .2s;border-radius:0 2px 2px 0;}
-.opt:hover{border-color:rgba(232,97,26,.4);background:var(--orp);transform:translateX(2px);}
-.opt:hover::before{transform:scaleY(.4);}
-.opt.sel{border-color:var(--or);background:var(--orp);}
-.opt.sel::before{transform:scaleY(1);}
-.opt-ico{font-size:20px;flex-shrink:0;line-height:1;width:30px;text-align:center;}
-.opt-body{flex:1;min-width:0;}
-.opt-t{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--n2);line-height:1.1;margin-bottom:1px;transition:color .2s;}
-.opt:hover .opt-t,.opt.sel .opt-t{color:var(--orh);}
-.opt-s{font-size:11px;color:var(--gm);font-weight:500;line-height:1.3;}
-.opt-price{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--or);margin-left:auto;flex-shrink:0;white-space:nowrap;}
-.opt-price.base{color:var(--gm);}
-.opt-radio{width:18px;height:18px;border:2px solid var(--bd);border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-left:8px;}
-.opt.sel .opt-radio{background:var(--or);border-color:var(--or);}
-.opt.sel .opt-radio::after{content:'';width:5px;height:8px;border-right:2.5px solid #fff;border-bottom:2.5px solid #fff;transform:rotate(42deg) translate(-1px,-1px);display:block;}
-
-/* supplemento badge */
-.suppl{display:inline-flex;align-items:center;gap:3px;background:rgba(232,97,26,.1);border:1px solid rgba(232,97,26,.2);border-radius:var(--rpill);padding:2px 7px;font-size:10px;font-weight:700;color:var(--or);font-family:'Barlow Condensed',sans-serif;letter-spacing:.04em;text-transform:uppercase;margin-left:auto;flex-shrink:0;}
-
-/* ─── FIELDS ─── */
-.fields{display:flex;flex-direction:column;gap:11px;}
-.fg{display:flex;flex-direction:column;gap:5px;}
-.fg label{font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gd);}
-.fg input,.fg textarea,.fg select{border:2px solid var(--bd);border-radius:var(--r8);padding:11px 13px;font-family:'Barlow',sans-serif;font-size:14px;font-weight:500;color:var(--tx);background:var(--w);outline:none;width:100%;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none;}
-.fg input::placeholder,.fg textarea::placeholder{color:#C8D0DC;font-weight:400;}
-.fg input:focus,.fg textarea:focus,.fg select:focus{border-color:var(--or);box-shadow:0 0 0 3px rgba(232,97,26,.1);}
-.fg textarea{resize:none;height:76px;}
-.fg select{cursor:pointer;padding-right:36px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%238A95A8' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;background-size:18px;}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
-.tel-w{position:relative;}
-.tel-flag{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;}
-.tel-w input{padding-left:40px;}
-.priv{display:flex;align-items:flex-start;gap:9px;margin-top:2px;}
-.priv input[type=checkbox]{width:14px;height:14px;accent-color:var(--or);margin-top:3px;flex-shrink:0;cursor:pointer;}
-.priv label{font-size:11px;color:var(--gm);line-height:1.6;cursor:pointer;}
-.priv a{color:var(--or);text-decoration:none;font-weight:600;}
-
-/* ─── RECAP ─── */
-.recap-box{background:linear-gradient(135deg,var(--n2),var(--n1));border-radius:var(--r12);padding:14px 16px;margin-bottom:14px;}
-.recap-lbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.32);margin-bottom:9px;}
-.recap-tags{display:flex;flex-wrap:wrap;gap:5px;}
-.rtag{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.8);font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:var(--rpill);display:flex;align-items:center;gap:4px;}
-
-/* ─── NAV ─── */
-.nav{display:flex;gap:9px;margin-top:22px;}
-.btn-back{display:flex;align-items:center;gap:5px;flex-shrink:0;background:transparent;border:2px solid var(--bd);border-radius:var(--rpill);padding:10px 16px;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gd);cursor:pointer;transition:all .2s;}
-.btn-back:hover{border-color:var(--gd);color:var(--tx);}
-.btn-next,.btn-submit{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;background:var(--or);border:none;border-radius:var(--rpill);padding:13px 22px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#fff;cursor:pointer;transition:all .25s;position:relative;overflow:hidden;}
-.btn-next::after,.btn-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);transform:translateX(-100%);transition:transform .4s;}
-.btn-next:hover,.btn-submit:hover{background:var(--orh);transform:translateY(-1px);box-shadow:0 8px 24px rgba(232,97,26,.4);}
-.btn-next:hover::after,.btn-submit:hover::after{transform:translateX(100%);}
-.btn-submit svg{width:16px;height:16px;fill:#fff;flex-shrink:0;}
-
-/* ─── PRICE BREAKDOWN (step interno) ─── */
-.price-breakdown{background:var(--off);border:1px solid var(--bd);border-radius:var(--r12);padding:14px 16px;margin-top:16px;}
-.pb-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gm);margin-bottom:10px;}
-.pb-row{display:flex;justify-content:space-between;align-items:center;font-size:12px;padding:3px 0;border-bottom:1px solid var(--gl);}
-.pb-row:last-child{border-bottom:none;padding-top:8px;font-weight:700;font-size:14px;color:var(--n2);}
-.pb-row .pbl{color:var(--gd);}
-.pb-row .pbv{font-weight:600;color:var(--tx);}
-.pb-row:last-child .pbv{color:var(--or);font-size:16px;font-family:'Barlow Condensed',sans-serif;font-weight:900;}
-
-/* ─── FINANCE PANEL ─── */
-.fin-panel{background:linear-gradient(135deg,#0f2040,#1a3560);border-radius:var(--r12);padding:14px 16px;margin-top:12px;}
-.fin-title{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:10px;}
-.fin-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
-.fin-tab{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:var(--rpill);padding:5px 12px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5);cursor:pointer;transition:all .2s;}
-.fin-tab.active,.fin-tab:hover{background:var(--or);border-color:var(--or);color:#fff;}
-.fin-rows{display:flex;flex-direction:column;gap:7px;}
-.fin-row{display:flex;justify-content:space-between;align-items:center;}
-.fin-row .frl{font-size:12px;color:rgba(255,255,255,.5);font-weight:500;}
-.fin-row .frv{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:#fff;}
-.fin-row .frv small{font-size:11px;color:rgba(255,255,255,.4);font-weight:400;}
-.fin-note{font-size:10px;color:rgba(255,255,255,.3);margin-top:8px;line-height:1.5;}
-
-/* ─── ERR ─── */
-.err{display:none;margin-top:9px;background:#FEF2F2;border:1px solid #FECACA;border-radius:var(--r8);padding:8px 11px;font-size:12px;color:#DC2626;font-weight:600;align-items:center;gap:6px;}
-.err.on{display:flex;}
-.err svg{width:13px;height:13px;fill:#DC2626;flex-shrink:0;}
-
-/* ─── SCREENS ─── */
-.screen{display:none;padding:56px 28px;text-align:center;}
-.screen.on{display:block;}
-.spinner-ring{width:50px;height:50px;margin:0 auto 18px;border-radius:50%;background:conic-gradient(var(--or) 0deg,transparent 300deg);animation:spin .75s linear infinite;mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));-webkit-mask:radial-gradient(farthest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));}
-@keyframes spin{to{transform:rotate(360deg)}}
-.screen p{color:var(--gm);font-size:14px;font-weight:500;}
-
-/* ─── THANK YOU ─── */
-.ty-ico{width:68px;height:68px;background:linear-gradient(135deg,var(--or),var(--orl));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;box-shadow:0 8px 32px rgba(232,97,26,.4);animation:pop .55s cubic-bezier(.34,1.56,.64,1);}
-@keyframes pop{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
-.ty-ico svg{width:30px;height:30px;fill:#fff;}
-.wa-badge{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 13px;border-radius:var(--rpill);margin-bottom:16px;box-shadow:0 4px 12px rgba(37,211,102,.3);}
-.wa-badge svg{width:13px;height:13px;fill:#fff;}
-.ty-h{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;color:var(--n2);margin-bottom:7px;line-height:1;}
-.ty-p{font-size:14px;color:var(--gm);line-height:1.7;margin-bottom:20px;max-width:360px;margin-left:auto;margin-right:auto;}
-.ty-recap{background:var(--off);border:1px solid var(--bd);border-radius:var(--r12);padding:16px 18px;margin-bottom:20px;text-align:left;display:flex;flex-direction:column;gap:7px;}
-.ty-row{display:flex;justify-content:space-between;align-items:flex-start;font-size:13px;gap:10px;}
-.ty-row .lb{color:var(--gm);font-weight:500;flex-shrink:0;}
-.ty-row .vl{color:var(--tx);font-weight:700;text-align:right;}
-.ty-row .vl.big{color:var(--or);font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;}
-.ty-call{display:inline-flex;align-items:center;gap:7px;background:var(--n2);color:#fff;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:11px 24px;border-radius:var(--rpill);text-decoration:none;transition:background .2s;}
-.ty-call:hover{background:var(--n3);}
-.ty-call svg{width:13px;height:13px;fill:#fff;}
-
-/* ─── FOOTER ─── */
-.foot{position:relative;z-index:1;text-align:center;padding:0 16px 24px;font-size:11px;color:rgba(255,255,255,.2);line-height:1.7;}
-.foot a{color:rgba(255,255,255,.3);text-decoration:none;}
-.foot a:hover{color:var(--or);}
-
-/* ─── RESPONSIVE ─── */
-@media(max-width:480px){
-  .step{padding:20px 18px 24px;}
-  .screen{padding:44px 18px;}
-  .path-grid,.opts.grid2{grid-template-columns:1fr;}
-  .r2{grid-template-columns:1fr;}
-  .pmeta{padding:12px 18px;}
-  .pw{padding:9px 16px;}
-  .pw-price{font-size:22px;}
-}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f7f6f3; --surface: #ffffff; --surface2: #f0ede8;
+    --text: #1a1a18; --text-muted: #6b6a66; --border: rgba(0,0,0,0.10);
+    --accent: #1a1a18; --green: #2d6a4f; --green-bg: #eaf3de;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141412; --surface: #1e1e1c; --surface2: #2a2a27;
+      --text: #f0ede8; --text-muted: #9a9893; --border: rgba(255,255,255,0.10);
+      --accent: #f0ede8; --green: #9FE1CB; --green-bg: #085041;
+    }
+  }
+  body { font-family: 'Georgia', serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+  .header { padding: 1.5rem 2rem; border-bottom: 0.5px solid var(--border); background: var(--surface); display: flex; align-items: baseline; justify-content: space-between; }
+  .header h1 { font-size: 20px; font-weight: 400; letter-spacing: -0.5px; }
+  .header p { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-family: 'Courier New', monospace; }
+  .setup-card { max-width: 520px; margin: 3rem auto; background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 2rem; }
+  .setup-card h2 { font-size: 18px; font-weight: 400; margin-bottom: 0.4rem; }
+  .setup-card .desc { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; font-family: 'Courier New', monospace; line-height: 1.6; }
+  .field { margin-bottom: 1rem; }
+  .field label { display: block; font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-family: 'Courier New', monospace; letter-spacing: 0.5px; text-transform: uppercase; }
+  .field input { width: 100%; padding: 10px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--surface2); color: var(--text); font-size: 14px; font-family: 'Courier New', monospace; outline: none; }
+  .field input:focus { border-color: var(--text-muted); }
+  .btn-primary { width: 100%; padding: 12px; background: var(--accent); color: var(--bg); border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: 'Georgia', serif; cursor: pointer; margin-top: 0.5rem; transition: opacity 0.15s; }
+  .btn-primary:hover { opacity: 0.85; }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+  .error-msg { background: #fcebeb; color: #a32d2d; border-radius: var(--radius-sm); padding: 10px 14px; font-size: 13px; font-family: 'Courier New', monospace; margin-top: 1rem; display: none; line-height: 1.5; }
+  .progress-bar-wrap { margin-top: 1rem; display: none; }
+  .progress-label { font-size: 12px; color: var(--text-muted); font-family: 'Courier New', monospace; margin-bottom: 6px; }
+  .progress-bar { height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; width: 0%; }
+  .dashboard { display: none; padding: 1.5rem 2rem; }
+  .top-bar { display: flex; gap: 8px; margin-bottom: 1.5rem; align-items: center; flex-wrap: wrap; }
+  .period-btn { padding: 6px 14px; border: 0.5px solid var(--border); border-radius: 20px; background: transparent; color: var(--text-muted); font-size: 13px; cursor: pointer; font-family: 'Courier New', monospace; transition: all 0.15s; }
+  .period-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .product-badge { margin-left: auto; padding: 4px 12px; background: var(--surface2); border-radius: 20px; font-size: 12px; color: var(--text-muted); font-family: 'Courier New', monospace; }
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; margin-bottom: 1.5rem; }
+  .metric-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+  .metric-label { font-size: 11px; color: var(--text-muted); font-family: 'Courier New', monospace; letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 6px; }
+  .metric-value { font-size: 24px; font-weight: 400; letter-spacing: -0.5px; }
+  .metric-card.highlight .metric-value { color: var(--green); }
+  .metric-sub { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-family: 'Courier New', monospace; }
+  .chart-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.5rem; }
+  .chart-title { font-size: 11px; color: var(--text-muted); font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 1rem; }
+  .table-section { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+  .table-header { padding: 1rem 1.25rem; border-bottom: 0.5px solid var(--border); font-size: 11px; color: var(--text-muted); font-family: 'Courier New', monospace; text-transform: uppercase; letter-spacing: 0.4px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { padding: 10px 1.25rem; text-align: left; font-weight: 400; color: var(--text-muted); font-family: 'Courier New', monospace; font-size: 11px; text-transform: uppercase; border-bottom: 0.5px solid var(--border); }
+  td { padding: 11px 1.25rem; border-bottom: 0.5px solid var(--border); color: var(--text); font-family: 'Courier New', monospace; }
+  tr:last-child td { border-bottom: none; }
+  .reset-btn { background: none; border: 0.5px solid var(--border); color: var(--text-muted); padding: 5px 12px; border-radius: var(--radius-sm); font-size: 12px; font-family: 'Courier New', monospace; cursor: pointer; }
+  .watermark { text-align: center; padding: 2rem; font-size: 11px; color: var(--text-muted); font-family: 'Courier New', monospace; opacity: 0.4; }
+  .empty-row td { text-align: center; color: var(--text-muted); padding: 2rem; }
+  @media (max-width: 600px) { .metrics-grid { grid-template-columns: 1fr; } .dashboard { padding: 1rem; } }
 </style>
 </head>
 <body>
 
-<div class="ambient"><div class="ab"></div><div class="ab"></div><div class="ab"></div></div>
-
-<!-- TOPBAR -->
-<div class="topbar">
-  <a href="https://daccaposrl.it" class="logo">
-    <div class="logo-mark"><svg viewBox="0 0 24 24"><path d="M21 16.5c0 .38-.21.71-.53.88l-7.9 4.44c-.16.12-.36.18-.57.18s-.41-.06-.57-.18l-7.9-4.44A1 1 0 013 16.5v-9c0-.38.21-.71.53-.88l7.9-4.44c.16-.12.36-.18.57-.18s.41.06.57.18l7.9 4.44c.32.17.53.5.53.88v9z"/></svg></div>
-    <span class="logo-name">D<em>ACCAPO</em></span>
-  </a>
-  <a href="tel:+393518022378" class="topbar-tel">
-    <svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.29 21 3 13.71 3 5c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
-    +39 351 8022378
-  </a>
+<div class="header">
+  <div>
+    <h1>Partner Dashboard</h1>
+    <p id="header-sub">— configura l'accesso per iniziare</p>
+  </div>
+  <button class="reset-btn" id="reset-btn" style="display:none" onclick="resetConfig()">↩ riconfigura</button>
 </div>
 
-<!-- PRICE WIDGET -->
-<div class="pw" id="pw" style="display:none">
-  <div class="pw-left">
-    <div>
-      <div class="pw-label">Stima preventivo</div>
-      <div class="pw-price" id="pwPrice">€ 0</div>
-      <div class="pw-base" id="pwBase"></div>
+<div id="setup-section">
+  <div class="setup-card">
+    <h2>Configurazione accesso</h2>
+    <p class="desc">Inserisci la Restricted API Key di Stripe (sola lettura) e il Product ID o Price ID del prodotto da monitorare.</p>
+    <div class="field">
+      <label>Stripe Restricted API Key</label>
+      <input type="password" id="api-key" placeholder="rk_live_..." autocomplete="off" />
     </div>
-    <div id="pwRates" style="display:flex;flex-direction:column;gap:3px;"></div>
-  </div>
-  <div class="pw-right">
-    <div id="pwMonthly" style="display:none">
-      <div style="font-size:10px;color:rgba(255,255,255,.35);font-weight:500;font-family:'Barlow Condensed';letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px">oppure da</div>
-      <div class="pw-monthly"><span id="pwMonthlyAmt"></span> <span>/mese</span></div>
-      <div style="font-size:10px;color:rgba(255,255,255,.3);margin-top:1px" id="pwMonthlyNote"></div>
+    <div class="field">
+      <label>Product ID o Price ID</label>
+      <input type="text" id="product-id" placeholder="prod_... oppure price_..." />
     </div>
-    <div class="fin-tabs" id="pwTabs"></div>
+    <div class="field">
+      <label>Quota partner (%)</label>
+      <input type="number" id="quota-pct" value="20" min="1" max="100" />
+    </div>
+    <div class="field">
+      <label>Nome prodotto (etichetta)</label>
+      <input type="text" id="product-label" placeholder="es. Corso Premium" />
+    </div>
+    <button class="btn-primary" id="load-btn" onclick="loadData()">Carica dati →</button>
+    <div class="progress-bar-wrap" id="progress-wrap">
+      <div class="progress-label" id="progress-label">Recupero pagamenti...</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="error-msg" id="error-msg"></div>
   </div>
 </div>
 
-<!-- MAIN -->
-<div class="main">
-<div class="card">
-
-  <!-- PROGRESS -->
-  <div class="phead" id="phead">
-    <div class="pbar-track"><div class="pbar-fill" id="pbar" style="width:0%"></div></div>
-    <div class="pmeta">
-      <span class="pmeta-lbl" id="pmeta-lbl">Il tuo progetto</span>
-      <div class="pmeta-step"><div class="step-dots" id="stepdots"></div><span id="pmeta-step"></span></div>
-    </div>
+<div class="dashboard" id="dashboard-section">
+  <div class="top-bar">
+    <button class="period-btn active" onclick="setPeriod(30, this)">30 giorni</button>
+    <button class="period-btn" onclick="setPeriod(90, this)">90 giorni</button>
+    <button class="period-btn" onclick="setPeriod(180, this)">6 mesi</button>
+    <button class="period-btn" onclick="setPeriod(365, this)">12 mesi</button>
+    <button class="period-btn" onclick="setPeriod(9999, this)">Tutto</button>
+    <span class="product-badge" id="product-badge">—</span>
   </div>
+  <div id="dashboard-content"></div>
+</div>
 
-  <!-- ══════════════════════════════════════
-       S0: SCELTA PERCORSO
-  ═══════════════════════════════════════ -->
-  <div class="step active" id="s0">
-    <div class="eyebrow">Inizia qui</div>
-    <div class="q">Cosa vuoi fare?</div>
-    <div class="hint">Scegli il percorso. Ti guidiamo noi passo per passo.</div>
-    <div class="path-grid">
-      <div class="path-card" id="pc-build" onclick="choosePath('build')">
-        <div class="path-ico">🛁</div>
-        <div class="path-title">Bagno<br>dei sogni</div>
-        <div class="path-sub">Ristrutturazione chiavi in mano — scegli ogni dettaglio</div>
-        <div class="path-price">da € 11.902</div>
-      </div>
-      <div class="path-card" id="pc-vasca" onclick="choosePath('vasca')">
-        <div class="path-ico">🚿</div>
-        <div class="path-title">Vasca<br>→ Doccia</div>
-        <div class="path-sub">Trasformazione rapida — elimina la vasca, installa la doccia</div>
-        <div class="path-price">da € 4.505</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ══════════════════════════════════════
-       PATH BUILD — A1: Sanitari
-  ═══════════════════════════════════════ -->
-  <div class="step" id="sA1">
-    <div class="eyebrow">Bagno dei sogni · 1 di 8</div>
-    <div class="q">Come vuoi<br>i sanitari?</div>
-    <div class="hint">WC e bidet inclusi nel pacchetto base. Puoi scegliere il modello Tecna Pure Vortex come upgrade.</div>
-    <div class="opts grid2">
-      <div class="opt" data-k="sanitari" data-v="Standard (incluso)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🚽</div>
-        <div class="opt-body"><div class="opt-t">Standard</div><div class="opt-s">Incluso nel pacchetto</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="sanitari" data-v="Tecna Pure Vortex" data-price="250" onclick="pick(this,true)">
-        <div class="opt-ico">✨</div>
-        <div class="opt-body"><div class="opt-t">Pure Vortex</div><div class="opt-s">WC + Bidet Tecna</div></div>
-        <div class="suppl">+€250</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA1"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA1','s0',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA1','sA2','sanitari','eA1')">Continua →</button></div>
-  </div>
-
-  <!-- A2: Doccia / Vasca -->
-  <div class="step" id="sA2">
-    <div class="eyebrow">Bagno dei sogni · 2 di 8</div>
-    <div class="q">Doccia, vasca<br>o entrambi?</div>
-    <div class="hint">Il pacchetto base include piatto 80×90 + box cristallo. Puoi scegliere misure maggiori.</div>
-    <div class="opts">
-      <div class="opt" data-k="doccia_vasca" data-v="Box doccia 80×90 (incluso)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🚿</div>
-        <div class="opt-body"><div class="opt-t">Box 80×90</div><div class="opt-s">Cristallo — incluso nel pacchetto</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="doccia_vasca" data-v="Box doccia 80×100" data-price="70" onclick="pick(this,true)">
-        <div class="opt-ico">🚿</div>
-        <div class="opt-body"><div class="opt-t">Box 80×100</div><div class="opt-s">Piatto + box cristallo — più spazio</div></div>
-        <div class="suppl">+€120</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="doccia_vasca" data-v="Box doccia 80×120" data-price="170" onclick="pick(this,true)">
-        <div class="opt-ico">🌊</div>
-        <div class="opt-body"><div class="opt-t">Box 80×120</div><div class="opt-s">Piatto + box cristallo — ampio</div></div>
-        <div class="suppl">+€220</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="doccia_vasca" data-v="Walk-in aperta" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🔲</div>
-        <div class="opt-body"><div class="opt-t">Walk-in</div><div class="opt-s">Vetro fisso, senza ante — di design</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="doccia_vasca" data-v="Solo vasca" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🛁</div>
-        <div class="opt-body"><div class="opt-t">Solo vasca</div><div class="opt-s">Relax e comfort</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA2"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA2','sA1',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA2','sA3','doccia_vasca','eA2')">Continua →</button></div>
-  </div>
-
-  <!-- A3: Rubinetteria -->
-  <div class="step" id="sA3">
-    <div class="eyebrow">Bagno dei sogni · 3 di 8</div>
-    <div class="q">Stile di<br>rubinetteria?</div>
-    <div class="hint">Miscelatori lavabo, bidet e doccia. Inclusa la cromata — scegli il finish che preferisci.</div>
-    <div class="opts">
-      <div class="opt" data-k="rubinetteria" data-v="Cromata (inclusa)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">⚙️</div>
-        <div class="opt-body"><div class="opt-t">Cromata</div><div class="opt-s">Classica senza tempo — inclusa</div></div>
-        <div class="opt-price base">inclusa</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="rubinetteria" data-v="ENERGY FIN nero/bianco/inox" data-price="360" onclick="pick(this,true)">
-        <div class="opt-ico">🖤</div>
-        <div class="opt-body"><div class="opt-t">Energy Fin</div><div class="opt-s">Nero / bianco / inox — moderna</div></div>
-        <div class="suppl">+€360</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="rubinetteria" data-v="VANITY cromata" data-price="100" onclick="pick(this,true)">
-        <div class="opt-ico">🤍</div>
-        <div class="opt-body"><div class="opt-t">Vanity cromata</div><div class="opt-s">Design raffinato, cromata</div></div>
-        <div class="suppl">+€100</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="rubinetteria" data-v="VANITY FIN nero/bianco/inox" data-price="195" onclick="pick(this,true)">
-        <div class="opt-ico">🔩</div>
-        <div class="opt-body"><div class="opt-t">Vanity Fin</div><div class="opt-s">Design raffinato, finitura colorata</div></div>
-        <div class="suppl">+€195</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="rubinetteria" data-v="X STILE cromata" data-price="150" onclick="pick(this,true)">
-        <div class="opt-ico">✨</div>
-        <div class="opt-body"><div class="opt-t">X Stile cromata</div><div class="opt-s">Premium, linea d'alta gamma</div></div>
-        <div class="suppl">+€150</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="rubinetteria" data-v="X STILE FIN nero/bianco/bronze" data-price="250" onclick="pick(this,true)">
-        <div class="opt-ico">🥉</div>
-        <div class="opt-body"><div class="opt-t">X Stile Fin</div><div class="opt-s">Premium, nero / bianco / bronze</div></div>
-        <div class="suppl">+€250</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA3"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA3','sA2',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA3','sA4','rubinetteria','eA3')">Continua →</button></div>
-  </div>
-
-  <!-- A4: Mobile -->
-  <div class="step" id="sA4">
-    <div class="eyebrow">Bagno dei sogni · 4 di 8</div>
-    <div class="q">Mobile<br>da bagno?</div>
-    <div class="hint">Il pacchetto base include mobile Syntesi/Slim H.50 L.60-90 con lavabo bianco lucido e specchio con luce.</div>
-    <div class="opts">
-      <div class="opt" data-k="mobile" data-v="Mobile base incluso (L.60-90)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🪞</div>
-        <div class="opt-body"><div class="opt-t">Mobile base</div><div class="opt-s">Syntesi/Slim H.50, L.60-90, specchio — incluso</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="mobile" data-v="Mobile L.105 — 2 cassetti" data-price="159" onclick="pick(this,true)">
-        <div class="opt-ico">📦</div>
-        <div class="opt-body"><div class="opt-t">Mobile L.105 — 2 cassetti</div><div class="opt-s">Slim/Syntesi P.51, specchio con luce</div></div>
-        <div class="suppl">+€159</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="mobile" data-v="Mobile L.105 — 3 cassetti" data-price="259" onclick="pick(this,true)">
-        <div class="opt-ico">📦</div>
-        <div class="opt-body"><div class="opt-t">Mobile L.105 — 3 cassetti</div><div class="opt-s">Slim/Syntesi P.51, a terra, specchio</div></div>
-        <div class="suppl">+€259</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="mobile" data-v="Mobile L.120 doppio lui&lei" data-price="269" onclick="pick(this,true)">
-        <div class="opt-ico">💑</div>
-        <div class="opt-body"><div class="opt-t">Mobile L.120 lui&lei</div><div class="opt-s">Doppia vasca, 2 cassetti, specchio</div></div>
-        <div class="suppl">+€269</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="mobile" data-v="Solo lavabo a muro" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">💧</div>
-        <div class="opt-body"><div class="opt-t">Solo lavabo a muro</div><div class="opt-s">Minimal, senza mobile contenitore</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA4"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA4','sA3',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA4','sA5','mobile','eA4')">Continua →</button></div>
-  </div>
-
-  <!-- A5: Colore mobile -->
-  <div class="step" id="sA5">
-    <div class="eyebrow">Bagno dei sogni · 5 di 8</div>
-    <div class="q">Colore del<br>mobile?</div>
-    <div class="hint">Disponibile bianco lucido incluso. Ogni altra finitura è un piccolo supplemento.</div>
-    <div class="opts grid2">
-      <div class="opt" data-k="colore_mobile" data-v="Bianco lucido (incluso)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🤍</div>
-        <div class="opt-body"><div class="opt-t">Bianco lucido</div><div class="opt-s">Classico e luminoso</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="colore_mobile" data-v="Colore opaco" data-price="89" onclick="pick(this,true)">
-        <div class="opt-ico">🎨</div>
-        <div class="opt-body"><div class="opt-t">Colore opaco</div><div class="opt-s">Matte — un tocco di carattere</div></div>
-        <div class="suppl">+€89</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="colore_mobile" data-v="Colore lucido / soft touch" data-price="109" onclick="pick(this,true)">
-        <div class="opt-ico">✨</div>
-        <div class="opt-body"><div class="opt-t">Colore lucido</div><div class="opt-s">Soft touch — premium finish</div></div>
-        <div class="suppl">+€109</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="colore_mobile" data-v="Da definire in showroom" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🖼️</div>
-        <div class="opt-body"><div class="opt-t">In showroom</div><div class="opt-s">Scegliamo insieme di persona</div></div>
-        <div class="opt-price base">TBD</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA5"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA5','sA4',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA5','sA6','colore_mobile','eA5')">Continua →</button></div>
-  </div>
-
-  <!-- A6: Stile piastrelle -->
-  <div class="step" id="sA6">
-    <div class="eyebrow">Bagno dei sogni · 6 di 8</div>
-    <div class="q">Che atmosfera<br>vuoi creare?</div>
-    <div class="hint">Lo stile guida la scelta delle piastrelle e delle finiture. Le piastrelle sono incluse nel pacchetto.</div>
-    <div class="opts grid2">
-      <div class="opt" data-k="stile" data-v="Moderno / minimal" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">◻️</div><div class="opt-body"><div class="opt-t">Moderno</div><div class="opt-s">Grigio, cemento, neutri</div></div><div class="opt-price base">incluso</div><div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="stile" data-v="Classico / elegante" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🏺</div><div class="opt-body"><div class="opt-t">Classico</div><div class="opt-s">Marmo, beige, caldi</div></div><div class="opt-price base">incluso</div><div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="stile" data-v="Bold / di tendenza" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🎨</div><div class="opt-body"><div class="opt-t">Bold</div><div class="opt-s">Colori, texture, carattere</div></div><div class="opt-price base">incluso</div><div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="stile" data-v="Mi fido di voi" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🌟</div><div class="opt-body"><div class="opt-t">Mi fido di voi</div><div class="opt-s">Decidete voi in showroom</div></div><div class="opt-price base">incluso</div><div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA6"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA6','sA5',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA6','sA7','stile','eA6')">Continua →</button></div>
-  </div>
-
-  <!-- A7: Tempistica -->
-  <div class="step" id="sA7">
-    <div class="eyebrow">Bagno dei sogni · 7 di 8</div>
-    <div class="q">Quando vorresti<br>iniziare?</div>
-    <div class="hint">Ci aiuta a pianificare disponibilità del team e materiali.</div>
-    <div class="opts grid2">
-      <div class="opt" data-k="tempistica" data-v="Entro 1 mese" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">⚡</div><div class="opt-body"><div class="opt-t">Subito</div><div class="opt-s">Entro 1 mese</div></div><div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="tempistica" data-v="Entro 3 mesi" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">📅</div><div class="opt-body"><div class="opt-t">3 mesi</div><div class="opt-s">Sto pianificando</div></div><div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="tempistica" data-v="Entro 6 mesi" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🗓️</div><div class="opt-body"><div class="opt-t">6 mesi</div><div class="opt-s">Raccogliendo info</div></div><div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="tempistica" data-v="Solo preventivo" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">📋</div><div class="opt-body"><div class="opt-t">Solo preventivo</div><div class="opt-s">Nessuna data ancora</div></div><div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eA7"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sA7','sA6',true)">← Indietro</button><button class="btn-next" onclick="fwd('sA7','sA8','tempistica','eA7')">Continua →</button></div>
-  </div>
-
-  <!-- A8: Riepilogo preventivo BUILD -->
-  <div class="step" id="sA8">
-    <div class="eyebrow">Bagno dei sogni · 8 di 8</div>
-    <div class="q">Il tuo preventivo<br>personalizzato</div>
-    <div class="hint">Riepilogo della tua configurazione. Inserisci i tuoi dati per riceverlo su WhatsApp.</div>
-
-    <div class="price-breakdown" id="pbBuild">
-      <div class="pb-title">Riepilogo costi</div>
-      <div class="pb-row"><span class="pbl">Pacchetto base chiavi in mano</span><span class="pbv">€ 11.902</span></div>
-      <div class="pb-row" id="pbSanitari" style="display:none"><span class="pbl">Upgrade sanitari</span><span class="pbv" id="pbSanitariV"></span></div>
-      <div class="pb-row" id="pbDoccia" style="display:none"><span class="pbl">Upgrade doccia</span><span class="pbv" id="pbDocciaV"></span></div>
-      <div class="pb-row" id="pbRubi" style="display:none"><span class="pbl">Upgrade rubinetteria</span><span class="pbv" id="pbRubiV"></span></div>
-      <div class="pb-row" id="pbMob" style="display:none"><span class="pbl">Upgrade mobile</span><span class="pbv" id="pbMobV"></span></div>
-      <div class="pb-row" id="pbCol" style="display:none"><span class="pbl">Finitura mobile</span><span class="pbv" id="pbColV"></span></div>
-      <div class="pb-row"><span class="pbl" style="font-weight:700">Totale stimato (IVA incl.)</span><span class="pbv" id="pbTotal"></span></div>
-    </div>
-
-    <div class="fin-panel" id="finBuild">
-      <div class="fin-title">Opzioni di finanziamento</div>
-      <div class="fin-tabs" id="finTabsBuild"></div>
-      <div class="fin-rows" id="finRowsBuild"></div>
-      <div class="fin-note">* Acconto 40% alla firma. Saldo il primo giorno lavori oppure a rate (dopo 4 mesi dall'inizio).</div>
-    </div>
-
-    <div class="nav" style="margin-top:16px"><button class="btn-back" onclick="go('sA8','sA7',true)">← Indietro</button><button class="btn-next" onclick="goToContact('build')">Richiedi preventivo →</button></div>
-  </div>
-
-  <!-- ══════════════════════════════════════
-       PATH VASCA — V1: Dimensioni
-  ═══════════════════════════════════════ -->
-  <div class="step" id="sV1">
-    <div class="eyebrow">Vasca → Doccia · 1 di 3</div>
-    <div class="q">Dimensione<br>del piatto doccia?</div>
-    <div class="hint">Il piatto 80×160 in ceramica o resina è incluso nel pacchetto. Scegli la misura più adatta.</div>
-    <div class="opts">
-      <div class="opt" data-k="vasca_size" data-v="Piatto 80×160 (incluso)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">🟦</div>
-        <div class="opt-body"><div class="opt-t">80 × 160</div><div class="opt-s">Ceramica o resina sp. 3 cm — incluso nel pacchetto</div></div>
-        <div class="opt-price base">incluso</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="vasca_size" data-v="Piatto 80×100" data-price="50" onclick="pick(this,true)">
-        <div class="opt-ico">🔷</div>
-        <div class="opt-body"><div class="opt-t">80 × 100</div><div class="opt-s">Ceramica o resina sp. 3 cm</div></div>
-        <div class="suppl">+€50</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="vasca_size" data-v="Piatto 80×120" data-price="100" onclick="pick(this,true)">
-        <div class="opt-ico">🔷</div>
-        <div class="opt-body"><div class="opt-t">80 × 120</div><div class="opt-s">Ceramica o resina sp. 3 cm</div></div>
-        <div class="suppl">+€100</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eV1"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sV1','s0',true)">← Indietro</button><button class="btn-next" onclick="fwd('sV1','sV2','vasca_size','eV1')">Continua →</button></div>
-  </div>
-
-  <!-- V2: Rubinetteria vasca -->
-  <div class="step" id="sV2">
-    <div class="eyebrow">Vasca → Doccia · 2 di 3</div>
-    <div class="q">Rubinetteria<br>della doccia?</div>
-    <div class="hint">Incluso miscelatore esterno soffione + doccino cromato. Puoi scegliere una finitura diversa.</div>
-    <div class="opts">
-      <div class="opt" data-k="vasca_rubi" data-v="Cromata (inclusa)" data-price="0" onclick="pick(this,true)">
-        <div class="opt-ico">⚙️</div>
-        <div class="opt-body"><div class="opt-t">Cromata</div><div class="opt-s">Miscelatore + soffione + doccino — inclusa</div></div>
-        <div class="opt-price base">inclusa</div>
-        <div class="opt-radio"></div>
-      </div>
-      <div class="opt" data-k="vasca_rubi" data-v="Finitura nero/bianco/inox" data-price="220" onclick="pick(this,true)">
-        <div class="opt-ico">🖤</div>
-        <div class="opt-body"><div class="opt-t">Fin nero / bianco / inox</div><div class="opt-s">Miscelatore + soffione + doccino Fin</div></div>
-        <div class="suppl">+€220</div>
-        <div class="opt-radio"></div>
-      </div>
-    </div>
-    <div class="err" id="eV2"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>Seleziona un'opzione.</div>
-    <div class="nav"><button class="btn-back" onclick="go('sV2','sV1',true)">← Indietro</button><button class="btn-next" onclick="fwd('sV2','sV3','vasca_rubi','eV2')">Continua →</button></div>
-  </div>
-
-  <!-- V3: Riepilogo preventivo VASCA -->
-  <div class="step" id="sV3">
-    <div class="eyebrow">Vasca → Doccia · 3 di 3</div>
-    <div class="q">Il tuo preventivo<br>personalizzato</div>
-    <div class="hint">Ecco il riepilogo. Inserisci i tuoi dati per riceverlo su WhatsApp.</div>
-
-    <div class="price-breakdown" id="pbVasca">
-      <div class="pb-title">Riepilogo costi</div>
-      <div class="pb-row"><span class="pbl">Pacchetto vasca → doccia</span><span class="pbv">€ 4.505</span></div>
-      <div class="pb-row" id="pbVSize" style="display:none"><span class="pbl">Upgrade piatto doccia</span><span class="pbv" id="pbVSizeV"></span></div>
-      <div class="pb-row" id="pbVRubi" style="display:none"><span class="pbl">Upgrade rubinetteria</span><span class="pbv" id="pbVRubiV"></span></div>
-      <div class="pb-row"><span class="pbl" style="font-weight:700">Totale stimato (IVA incl.)</span><span class="pbv" id="pbVTotal"></span></div>
-    </div>
-
-    <div class="fin-panel" id="finVasca">
-      <div class="fin-title">Opzioni di finanziamento</div>
-      <div class="fin-tabs" id="finTabsVasca"></div>
-      <div class="fin-rows" id="finRowsVasca"></div>
-      <div class="fin-note">* Acconto 30% alla firma. Saldo il primo giorno lavori oppure a rate (dopo 4 mesi dall'inizio).</div>
-    </div>
-
-    <div class="nav" style="margin-top:16px"><button class="btn-back" onclick="go('sV3','sV2',true)">← Indietro</button><button class="btn-next" onclick="goToContact('vasca')">Richiedi preventivo →</button></div>
-  </div>
-
-  <!-- ══════════════════════════════════════
-       CONTATTI (comune)
-  ═══════════════════════════════════════ -->
-  <div class="step" id="sC">
-    <div class="eyebrow" id="cEye">Quasi fatto!</div>
-    <div class="q" id="cQ">A chi mandiamo<br>il preventivo?</div>
-    <div class="hint" id="cHint">Riceverai tutto su <strong>WhatsApp</strong> entro poche ore, con la data per il sopralluogo gratuito.</div>
-
-    <div class="recap-box" id="recapBox" style="display:none">
-      <div class="recap-lbl">La tua configurazione</div>
-      <div class="recap-tags" id="recapTags"></div>
-    </div>
-
-    <div class="fields">
-      <div class="r2">
-        <div class="fg"><label>Nome *</label><input type="text" id="nome" placeholder="Mario" autocomplete="given-name"></div>
-        <div class="fg"><label>Cognome *</label><input type="text" id="cognome" placeholder="Rossi" autocomplete="family-name"></div>
-      </div>
-      <div class="fg"><label>📱 WhatsApp *</label>
-        <div class="tel-w"><span class="tel-flag">🇮🇹</span><input type="tel" id="tel" placeholder="+39 333 000 0000" autocomplete="tel"></div>
-      </div>
-      <div class="fg"><label>Email <span style="color:var(--gm);font-weight:400;text-transform:none;letter-spacing:0">(facoltativa)</span></label><input type="email" id="email" placeholder="mario.rossi@email.it" autocomplete="email"></div>
-      <div class="fg">
-        <label>Città / Comune *</label>
-        <select id="citta">
-          <option value="" disabled selected>Seleziona la tua città…</option>
-          <optgroup label="Provincia di Venezia">
-            <option>Venezia</option><option>Mestre</option><option>Chioggia</option><option>Mirano</option><option>Spinea</option><option>Dolo</option><option>San Donà di Piave</option><option>Jesolo</option><option>Mogliano Veneto</option><option>Portogruaro</option><option>Marcon</option><option>Quarto d'Altino</option><option>Scorzè</option><option>Noale</option><option>Santa Maria di Sala</option><option>Cavarzere</option><option>Camponogara</option><option>Pianiga</option><option>Vigonovo</option><option>Musile di Piave</option><option>Eraclea</option><option>Caorle</option>
-          </optgroup>
-          <optgroup label="Provincia di Treviso">
-            <option>Treviso</option><option>Conegliano</option><option>Vittorio Veneto</option><option>Montebelluna</option><option>Oderzo</option><option>Castelfranco Veneto</option><option>Pieve di Soligo</option><option>Valdobbiadene</option><option>Asolo</option><option>Paese</option><option>Preganziol</option><option>Silea</option><option>Villorba</option><option>Ponzano Veneto</option><option>Spresiano</option><option>Roncade</option><option>Carbonera</option>
-          </optgroup>
-          <optgroup label="Provincia di Padova">
-            <option>Padova</option><option>Abano Terme</option><option>Vigonza</option><option>Selvazzano Dentro</option><option>Rubano</option><option>Albignasego</option><option>Camposampiero</option><option>Cittadella</option><option>Este</option><option>Monselice</option><option>Piove di Sacco</option><option>Cadoneghe</option><option>Limena</option><option>Noventa Padovana</option><option>Saonara</option><option>Campodarsego</option>
-          </optgroup>
-          <optgroup label="Provincia di Verona">
-            <option>Verona</option><option>San Giovanni Lupatoto</option><option>Villafranca di Verona</option><option>Legnago</option><option>Bussolengo</option><option>San Bonifacio</option><option>Sommacampagna</option><option>Peschiera del Garda</option><option>Lazise</option><option>Bardolino</option><option>Negrar di Valpolicella</option><option>Pescantina</option><option>Castelnuovo del Garda</option>
-          </optgroup>
-          <optgroup label="Provincia di Vicenza">
-            <option>Vicenza</option><option>Bassano del Grappa</option><option>Schio</option><option>Thiene</option><option>Arzignano</option><option>Montecchio Maggiore</option><option>Altavilla Vicentina</option><option>Caldogno</option><option>Dueville</option><option>Marostica</option><option>Asiago</option>
-          </optgroup>
-          <optgroup label="Provincia di Belluno">
-            <option>Belluno</option><option>Feltre</option><option>Agordo</option><option>Pieve di Cadore</option><option>Cortina d'Ampezzo</option><option>Longarone</option>
-          </optgroup>
-          <optgroup label="Provincia di Rovigo">
-            <option>Rovigo</option><option>Adria</option><option>Badia Polesine</option><option>Lendinara</option><option>Porto Viro</option><option>Rosolina</option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="fg" id="noteWrap"><label>Note <span style="color:var(--gm);font-weight:400;text-transform:none;letter-spacing:0">(facoltative)</span></label><textarea id="note" placeholder="Dimensioni bagno, dettagli particolari, domande…"></textarea></div>
-      <div class="priv">
-        <input type="checkbox" id="privacy">
-        <label for="privacy">Ho letto e accetto la <a href="https://daccaposrl.it/privacy" target="_blank">Privacy Policy</a>. Autorizzo Daccapo Srl a contattarmi su WhatsApp per il preventivo richiesto.</label>
-      </div>
-    </div>
-
-    <div class="err" id="eC"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg><span id="eCt">Compila tutti i campi obbligatori.</span></div>
-
-    <div class="nav">
-      <button class="btn-back" onclick="backC()">← Indietro</button>
-      <button class="btn-submit" onclick="sub()">
-        <svg viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51H7c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35z"/><path d="M12 2C6.48 2 2 6.48 2 12c0 1.77.46 3.44 1.27 4.9L2 22l5.24-1.38C8.65 21.36 10.29 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
-        Ricevi preventivo su WhatsApp
-      </button>
-    </div>
-  </div>
-
-  <!-- LOADING -->
-  <div class="screen" id="loadS">
-    <div class="spinner-ring"></div>
-    <p>Stiamo preparando il tuo preventivo…</p>
-  </div>
-
-  <!-- THANK YOU -->
-  <div class="screen" id="tyS">
-    <div class="ty-ico"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-    <div class="wa-badge"><svg viewBox="0 0 24 24"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.16-.17.2-.35.22-.65.08-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.21-.24-.58-.49-.5-.67-.51H7c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.06 2.88 1.21 3.07c.15.2 2.1 3.2 5.08 4.49.71.31 1.26.49 1.69.63.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.41.25-.7.25-1.29.17-1.41-.07-.12-.27-.2-.57-.35z"/><path d="M12 2C6.48 2 2 6.48 2 12c0 1.77.46 3.44 1.27 4.9L2 22l5.24-1.38C8.65 21.36 10.29 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg> Preventivo in arrivo su WhatsApp</div>
-    <div class="ty-h">Ci siamo!</div>
-    <p class="ty-p">Il team Daccapo ti contatterà su WhatsApp entro poche ore con il preventivo e per fissare il <strong>sopralluogo gratuito</strong>.</p>
-    <div class="ty-recap" id="tyRecap"></div>
-    <a href="tel:+393518022378" class="ty-call"><svg viewBox="0 0 24 24"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.29 21 3 13.71 3 5c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>+39 351 8022378</a>
-  </div>
-
-</div><!-- /card -->
-</div><!-- /main -->
-
-<div class="foot">© 2025 Daccapo S.r.l. &nbsp;·&nbsp; <a href="https://daccaposrl.it/privacy">Privacy Policy</a> &nbsp;·&nbsp; <a href="https://daccaposrl.it">daccaposrl.it</a></div>
+<div class="watermark">Partner Dashboard — dati in tempo reale da Stripe</div>
 
 <script>
-/* ─── CONFIG ─── */
-const GHL = 'https://hooks.gohighlevel.com/webhook/YOUR_WEBHOOK_ID_HERE';
+let CONFIG = {};
+let allPayments = [];
+let chartInstance = null;
+let currentDays = 30;
 
-/* ─── PREZZI BASE ─── */
-const BASE_BUILD = 11902;
-const BASE_VASCA = 4505; // 4504.50 arrotondato
-
-/* ─── RATE BUILD — tabelle dal listino ─── */
-const RATES_BUILD = {
-  // [acconto, saldo immediato, rata60, rata96, rata120] — valori dal PDF
-  saldo: { acc: 0.40, label: 'Acconto 40% + saldo', note: 'Saldo il 1° giorno lavori' },
-  r120:  { months: 120, base: 142, label: '10 anni (120 rate)' },
-  r96:   { months: 96,  base: 167, label: '8 anni (96 rate)' },
-  r60:   { months: 60,  base: 241, label: '5 anni (60 rate)' },
-};
-
-/* ─── RATE VASCA ─── */
-const RATES_VASCA = {
-  saldo: { acc: 0.30, label: 'Acconto 30% + saldo', note: 'Saldo il 1° giorno lavori' },
-  r60:   { months: 60,  base: 95,  label: '5 anni (60 rate)' },
-  r48:   { months: 48,  base: 114, label: '4 anni (48 rate)' },
-  r36:   { months: 36,  base: 145, label: '3 anni (36 rate)' },
-  r24:   { months: 24,  base: 209, label: '2 anni (2 rate)' },
-};
-
-/* ─── SCALING RATE (proporzionale al prezzo) ─── */
-function scaleRate(baseRate, basePrice, actualPrice) {
-  return Math.round(baseRate * actualPrice / basePrice);
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
 }
 
-/* ─── STATE ─── */
-let path = '';
-let cur  = 's0';
-let activeFinTab = null;
-const A  = {};
+function setProgress(pct, label) {
+  document.getElementById('progress-wrap').style.display = 'block';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = label;
+}
 
-const SEQ_BUILD = ['s0','sA1','sA2','sA3','sA4','sA5','sA6','sA7','sA8','sC'];
-const SEQ_VASCA = ['s0','sV1','sV2','sV3','sC'];
+async function stripeGet(path) {
+  const resp = await fetch('https://api.stripe.com/v1/' + path, {
+    headers: { 'Authorization': 'Bearer ' + CONFIG.apiKey }
+  });
+  const data = await resp.json();
+  if (data.error) throw new Error(data.error.message);
+  return data;
+}
 
-/* ─── PRICE CALC ─── */
-function calcPrice() {
-  if (path === 'build') {
-    let p = BASE_BUILD;
-    const keys = ['sanitari','doccia_vasca','rubinetteria','mobile','colore_mobile'];
-    keys.forEach(k => { if (A[k]) p += Number(A[k+'_price']||0); });
-    return p;
-  } else if (path === 'vasca') {
-    let p = BASE_VASCA;
-    ['vasca_size','vasca_rubi'].forEach(k => { if (A[k]) p += Number(A[k+'_price']||0); });
-    return p;
+async function fetchAllPages(endpoint) {
+  let results = [];
+  let hasMore = true;
+  let startingAfter = null;
+  while (hasMore) {
+    const sep = endpoint.includes('?') ? '&' : '?';
+    const q = startingAfter ? endpoint + sep + 'limit=100&starting_after=' + startingAfter : endpoint + sep + 'limit=100';
+    const data = await stripeGet(q);
+    results = results.concat(data.data);
+    hasMore = data.has_more;
+    if (hasMore && data.data.length > 0) startingAfter = data.data[data.data.length - 1].id;
+    if (results.length > 3000) break;
   }
-  return 0;
+  return results;
 }
 
-/* ─── UPDATE PRICE WIDGET ─── */
-function fmt(n) { return '€ ' + n.toLocaleString('it-IT'); }
+async function loadData() {
+  document.getElementById('error-msg').style.display = 'none';
+  const apiKey = document.getElementById('api-key').value.trim();
+  const productId = document.getElementById('product-id').value.trim();
+  const quotaPct = parseFloat(document.getElementById('quota-pct').value) || 20;
+  const productLabel = document.getElementById('product-label').value.trim() || productId;
 
-function updatePW() {
-  if (path === '' || cur === 's0') { document.getElementById('pw').style.display='none'; return; }
-  document.getElementById('pw').style.display='flex';
+  if (!apiKey || !productId) { showError('Inserisci sia la API Key che il Product ID.'); return; }
+  CONFIG = { apiKey, productId, quotaPct, productLabel };
 
-  const price = calcPrice();
-  const base  = path === 'build' ? BASE_BUILD : BASE_VASCA;
-  const suppl = price - base;
+  const btn = document.getElementById('load-btn');
+  btn.disabled = true;
+  btn.textContent = 'Caricamento...';
 
-  const priceEl = document.getElementById('pwPrice');
-  priceEl.textContent = fmt(price);
-  priceEl.classList.add('bump');
-  setTimeout(() => priceEl.classList.remove('bump'), 350);
-
-  document.getElementById('pwBase').textContent = suppl > 0 ? `(base ${fmt(base)} + €${suppl} upgrade)` : '';
-
-  // rate tabs nel widget
-  const rates  = path === 'build' ? RATES_BUILD : RATES_VASCA;
-  const tabsEl = document.getElementById('pwTabs');
-  const monEl  = document.getElementById('pwMonthly');
-  const monAmt = document.getElementById('pwMonthlyAmt');
-  const monNote= document.getElementById('pwMonthlyNote');
-
-  // render tabs
-  const rateKeys = Object.keys(rates).filter(k => rates[k].months);
-  tabsEl.innerHTML = rateKeys.map(k =>
-    `<div class="fin-tab pw-rate ${activeFinTab===k?'active':''}" onclick="setFinTab('${k}')">${rates[k].months} rate</div>`
-  ).join('');
-
-  if (activeFinTab && rates[activeFinTab] && rates[activeFinTab].months) {
-    const r = rates[activeFinTab];
-    const monthly = scaleRate(r.base, base, price);
-    monEl.style.display = 'block';
-    monAmt.textContent = fmt(monthly);
-    monNote.textContent = r.label;
-  } else {
-    monEl.style.display = 'none';
-  }
-}
-
-function setFinTab(k) {
-  activeFinTab = k;
-  updatePW();
-  renderFinPanels();
-}
-
-/* ─── FINANCE PANELS (interni agli step riepilogo) ─── */
-function renderFinPanels() {
-  renderFinPanel('Build');
-  renderFinPanel('Vasca');
-}
-
-function renderFinPanel(suffix) {
-  const panelPath = suffix === 'Build' ? 'build' : 'vasca';
-  if (path !== panelPath) return;
-
-  const price = calcPrice();
-  const base  = path === 'build' ? BASE_BUILD : BASE_VASCA;
-  const rates  = path === 'build' ? RATES_BUILD : RATES_VASCA;
-
-  const tabsEl = document.getElementById('finTabs'+suffix);
-  const rowsEl = document.getElementById('finRows'+suffix);
-  if (!tabsEl || !rowsEl) return;
-
-  const rateKeys = Object.keys(rates).filter(k => rates[k].months);
-
-  tabsEl.innerHTML = rateKeys.map(k =>
-    `<div class="fin-tab ${activeFinTab===k?'active':''}" onclick="setFinTab('${k}')">${rates[k].months} rate</div>`
-  ).join('');
-
-  if (activeFinTab && rates[activeFinTab] && rates[activeFinTab].months) {
-    const r = rates[activeFinTab];
-    const monthly = scaleRate(r.base, base, price);
-    const accPct  = rates.saldo.acc;
-    const accAmt  = Math.round(price * accPct);
-    const saldoAmt= price - accAmt;
-    rowsEl.innerHTML = `
-      <div class="fin-row"><span class="frl">Acconto alla firma (${Math.round(accPct*100)}%)</span><span class="frv">${fmt(accAmt)}</span></div>
-      <div class="fin-row"><span class="frl">Saldo residuo</span><span class="frv">${fmt(saldoAmt)}</span></div>
-      <div class="fin-row"><span class="frl">Rata mensile × ${r.months}</span><span class="frv">${fmt(monthly)} <small>/mese</small></span></div>
-    `;
-  } else {
-    const accPct  = rates.saldo.acc;
-    const accAmt  = Math.round(price * accPct);
-    const saldoAmt= price - accAmt;
-    rowsEl.innerHTML = `
-      <div class="fin-row"><span class="frl">Acconto alla firma (${Math.round(accPct*100)}%)</span><span class="frv">${fmt(accAmt)}</span></div>
-      <div class="fin-row"><span class="frl">Saldo il 1° giorno lavori</span><span class="frv">${fmt(saldoAmt)}</span></div>
-      <p style="color:rgba(255,255,255,.4);font-size:11px;margin-top:4px">Seleziona un piano rateale sopra per vedere la rata mensile.</p>
-    `;
-  }
-}
-
-/* ─── BREAKDOWN PANELS ─── */
-function renderBuildBreakdown() {
-  const price = calcPrice();
-  const suppl_san = Number(A['sanitari_price']||0);
-  const suppl_doc = Number(A['doccia_vasca_price']||0);
-  const suppl_rub = Number(A['rubinetteria_price']||0);
-  const suppl_mob = Number(A['mobile_price']||0);
-  const suppl_col = Number(A['colore_mobile_price']||0);
-
-  const show = (id, valId, v, prefix) => {
-    const r = document.getElementById(id);
-    if (v > 0) { r.style.display='flex'; document.getElementById(valId).textContent = prefix+'€'+v; }
-    else r.style.display='none';
-  };
-  show('pbSanitari','pbSanitariV', suppl_san, '+');
-  show('pbDoccia','pbDocciaV', suppl_doc, '+');
-  show('pbRubi','pbRubiV', suppl_rub, '+');
-  show('pbMob','pbMobV', suppl_mob, '+');
-  show('pbCol','pbColV', suppl_col, '+');
-  document.getElementById('pbTotal').textContent = fmt(price);
-  renderFinPanel('Build');
-}
-
-function renderVascaBreakdown() {
-  const price = calcPrice();
-  const suppl_size = Number(A['vasca_size_price']||0);
-  const suppl_rubi = Number(A['vasca_rubi_price']||0);
-
-  const show = (id, valId, v) => {
-    const r = document.getElementById(id);
-    if (v > 0) { r.style.display='flex'; document.getElementById(valId).textContent = '+€'+v; }
-    else r.style.display='none';
-  };
-  show('pbVSize','pbVSizeV', suppl_size);
-  show('pbVRubi','pbVRubiV', suppl_rubi);
-  document.getElementById('pbVTotal').textContent = fmt(price);
-  renderFinPanel('Vasca');
-}
-
-/* ─── PICK ─── */
-function pick(el, autoAdvance) {
-  const k = el.dataset.k;
-  el.closest('.opts').querySelectorAll('.opt').forEach(o => o.classList.remove('sel'));
-  el.classList.add('sel');
-  A[k] = el.dataset.v;
-  A[k+'_price'] = Number(el.dataset.price||0);
-
-  const errEl = el.closest('.step').querySelector('.err');
-  if (errEl) errEl.classList.remove('on');
-
-  updatePW();
-
-  if (autoAdvance) setTimeout(() => el.closest('.step').querySelector('.btn-next').click(), 280);
-}
-
-/* ─── PATH ─── */
-function choosePath(p) {
-  path = p;
-  document.getElementById('pc-build').classList.toggle('sel', p==='build');
-  document.getElementById('pc-vasca').classList.toggle('sel', p==='vasca');
-  setTimeout(() => {
-    if (p === 'build') goTo('s0','sA1');
-    else goTo('s0','sV1');
-    updatePW();
-  }, 220);
-}
-
-/* ─── FWD ─── */
-function fwd(from, to, key, errId) {
-  if (!A[key]) { document.getElementById(errId).classList.add('on'); return; }
-  if (to === 'sA8') renderBuildBreakdown();
-  if (to === 'sV3') renderVascaBreakdown();
-  goTo(from, to);
-}
-
-function goToContact(p) {
-  prepC();
-  goTo(p === 'build' ? 'sA8' : 'sV3', 'sC');
-}
-
-/* ─── BACK ─── */
-function go(from, to, isBack) { isBack ? goBack(from,to) : goTo(from,to); }
-function goTo(from,to){transit(from,to,false);}
-function goBack(from,to){transit(from,to,true);}
-function backC(){
-  const prev = path==='build' ? 'sA8' : 'sV3';
-  transit('sC',prev,true);
-}
-
-function transit(from, to, isBack) {
-  const fromEl = document.getElementById(from);
-  const toEl   = document.getElementById(to);
-  fromEl.classList.remove('active','back');
-  toEl.classList.toggle('back', isBack);
-  if (!isBack) toEl.classList.remove('back');
-  toEl.classList.add('active');
-  cur = to;
-  updateProg();
-  updatePW();
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* ─── PROGRESS ─── */
-function updateProg() {
-  const seq = path==='vasca' ? SEQ_VASCA : SEQ_BUILD;
-  const idx  = seq.indexOf(cur);
-  const total= seq.length - 1;
-  const pct  = cur==='s0' ? 3 : Math.round((idx/total)*100);
-  document.getElementById('pbar').style.width = pct+'%';
-
-  const dots = document.getElementById('stepdots');
-  if (path && cur !== 's0') {
-    const steps = seq.slice(1);
-    dots.innerHTML = steps.map((s,i) => {
-      const cls = i < idx-1 ? 'done' : i === idx-1 ? 'cur' : '';
-      return `<div class="step-dot ${cls}"></div>`;
-    }).join('');
-  } else dots.innerHTML = '';
-
-  const lbl  = document.getElementById('pmeta-lbl');
-  const step = document.getElementById('pmeta-step');
-  if (cur==='s0'){ lbl.textContent='Il tuo progetto'; step.textContent=''; }
-  else if (cur==='sC'){ lbl.textContent='Ultimo step'; step.textContent='🏁'; }
-  else if (path==='build'){ lbl.textContent='Bagno dei sogni'; step.textContent=''; }
-  else { lbl.textContent='Vasca → Doccia'; step.textContent=''; }
-}
-
-/* ─── PREP CONTACTS ─── */
-function prepC() {
-  const recap = document.getElementById('recapBox');
-  const noteWrap = document.getElementById('noteWrap');
-  if (path === 'build') {
-    recap.style.display = 'block';
-    noteWrap.style.display = '';
-    document.getElementById('cEye').textContent = 'Quasi fatto!';
-    document.getElementById('cQ').innerHTML = 'A chi mandiamo<br>il preventivo?';
-    document.getElementById('cHint').innerHTML = 'Riceverai tutto su <strong>WhatsApp</strong> entro poche ore, con la data per il sopralluogo gratuito.';
-    const map = {sanitari:'🚽',doccia_vasca:'🚿',rubinetteria:'🔧',mobile:'🪞',colore_mobile:'🎨',stile:'✨',tempistica:'📅'};
-    document.getElementById('recapTags').innerHTML = Object.entries(map)
-      .filter(([k]) => A[k])
-      .map(([k,ico]) => `<div class="rtag">${ico} ${A[k]}</div>`)
-      .join('');
-  } else {
-    recap.style.display = 'none';
-    noteWrap.style.display = 'none';
-    document.getElementById('cEye').textContent = 'Un ultimo passo';
-    document.getElementById('cQ').innerHTML = 'Dove ti mandiamo<br>il preventivo?';
-    document.getElementById('cHint').innerHTML = 'Lasciaci i tuoi dati: ti contatteremo su <strong>WhatsApp</strong> con i dettagli per la trasformazione vasca → doccia.';
-  }
-}
-
-/* ─── SUBMIT ─── */
-async function sub() {
-  const nome    = document.getElementById('nome').value.trim();
-  const cognome = document.getElementById('cognome').value.trim();
-  const tel     = document.getElementById('tel').value.trim();
-  const email   = document.getElementById('email').value.trim();
-  const citta   = document.getElementById('citta').value.trim();
-  const note    = document.getElementById('note')?.value.trim() || '';
-  const priv    = document.getElementById('privacy').checked;
-
-  const err = document.getElementById('eC');
-  const ect = document.getElementById('eCt');
-
-  if (!nome || !cognome || !tel || !citta) {
-    ect.textContent = 'Compila nome, cognome, WhatsApp e seleziona la città.';
-    err.classList.add('on'); return;
-  }
-  if (!priv) {
-    ect.textContent = 'Accetta la Privacy Policy per continuare.';
-    err.classList.add('on'); return;
-  }
-  err.classList.remove('on');
-
-  document.getElementById('sC').classList.remove('active');
-  document.getElementById('phead').style.display = 'none';
-  document.getElementById('pw').style.display = 'none';
-  document.getElementById('loadS').classList.add('on');
-
-  const tipo   = path==='build' ? 'Ristrutturazione chiavi in mano' : 'Sostituzione vasca → doccia';
-  const price  = calcPrice();
-  const payload = {
-    firstName: nome, lastName: cognome, phone: tel, email,
-    customFields: { tipo_intervento: tipo, citta, note, preventivo_stimato: fmt(price), ...A },
-    tags: ['lead-bagno', path==='build'?'chiavi-in-mano':'vasca-doccia', (A.tempistica||'').includes('mese')?'urgente':'futuro'],
-    source: 'Landing Configuratore Bagno'
-  };
-
-  try { await fetch(GHL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),mode:'no-cors'}); }
-  catch(e){}
-
-  setTimeout(() => {
-    document.getElementById('loadS').classList.remove('on');
-    showTY(nome, cognome, tel, citta, tipo, price);
-  }, 1200);
-}
-
-/* ─── THANK YOU ─── */
-function showTY(nome, cognome, tel, citta, tipo, price) {
-  const rows = [
-    {lb:'Nome',           vl: nome+' '+cognome},
-    {lb:'WhatsApp',       vl: tel},
-    {lb:'Zona',           vl: citta},
-    {lb:'Intervento',     vl: tipo},
-    {lb:'Preventivo stimato', vl: fmt(price), big: true},
-  ];
-  if (path==='build') {
-    if (A.stile)       rows.push({lb:'Stile',       vl:A.stile});
-    if (A.tempistica)  rows.push({lb:'Tempistica',  vl:A.tempistica});
-  }
-  if (activeFinTab) {
-    const rates = path==='build' ? RATES_BUILD : RATES_VASCA;
-    if (rates[activeFinTab]?.months) {
-      const base = path==='build' ? BASE_BUILD : BASE_VASCA;
-      const monthly = scaleRate(rates[activeFinTab].base, base, price);
-      rows.push({lb:'Piano rate', vl: fmt(monthly)+'/mese × '+rates[activeFinTab].months});
+  try {
+    setProgress(10, 'Recupero prezzi del prodotto...');
+    let priceIds = [];
+    if (productId.startsWith('price_')) {
+      priceIds = [productId];
+    } else {
+      const prices = await fetchAllPages('prices?product=' + productId);
+      priceIds = prices.map(function(p) { return p.id; });
     }
+    if (priceIds.length === 0) throw new Error('Nessun prezzo trovato. Verifica il Product ID su Stripe → Products.');
+
+    setProgress(30, 'Ricerca fatture associate...');
+    let payments = [];
+    let invoiceIds = new Set();
+
+    for (let i = 0; i < priceIds.length; i++) {
+      setProgress(30 + Math.round((i / priceIds.length) * 40), 'Analisi prezzo ' + (i+1) + ' di ' + priceIds.length + '...');
+      try {
+        const items = await fetchAllPages('invoice_items?price=' + priceIds[i]);
+        items.forEach(function(item) {
+          if (item.invoice) {
+            const id = typeof item.invoice === 'string' ? item.invoice : item.invoice.id;
+            invoiceIds.add(id);
+          }
+        });
+      } catch(e) {}
+    }
+
+    setProgress(75, 'Recupero dettagli pagamenti (' + invoiceIds.size + ' fatture)...');
+    const ids = Array.from(invoiceIds);
+    for (let i = 0; i < ids.length; i++) {
+      if (i % 5 === 0) setProgress(75 + Math.round((i / Math.max(ids.length,1)) * 20), 'Fattura ' + (i+1) + ' di ' + ids.length + '...');
+      try {
+        const inv = await stripeGet('invoices/' + ids[i]);
+        if (inv.status === 'paid' && inv.amount_paid > 0) {
+          payments.push({
+            id: inv.id,
+            date: inv.status_transitions && inv.status_transitions.paid_at ? inv.status_transitions.paid_at : inv.created,
+            amount: inv.amount_paid,
+            currency: (inv.currency || 'eur').toUpperCase(),
+            description: inv.number || inv.id
+          });
+        }
+      } catch(e) {}
+    }
+
+    // Fallback: scan charges with metadata match
+    if (payments.length === 0) {
+      setProgress(80, 'Nessuna fattura trovata, analisi pagamenti diretti...');
+      try {
+        const charges = await fetchAllPages('charges');
+        charges.forEach(function(c) {
+          if (c.status !== 'succeeded') return;
+          const meta = c.metadata || {};
+          const vals = Object.values(meta).map(function(v) { return String(v); });
+          if (vals.indexOf(productId) !== -1 || priceIds.some(function(pid) { return vals.indexOf(pid) !== -1; })) {
+            payments.push({ id: c.id, date: c.created, amount: c.amount, currency: (c.currency || 'eur').toUpperCase(), description: c.description || c.id });
+          }
+        });
+      } catch(e) {}
+    }
+
+    setProgress(100, 'Completato!');
+    allPayments = payments.sort(function(a,b) { return b.date - a.date; });
+    CONFIG.currency = payments.length > 0 ? payments[0].currency : 'EUR';
+
+    setTimeout(function() {
+      document.getElementById('setup-section').style.display = 'none';
+      document.getElementById('dashboard-section').style.display = 'block';
+      document.getElementById('reset-btn').style.display = 'inline-block';
+      document.getElementById('product-badge').textContent = productLabel;
+      document.getElementById('header-sub').textContent = '— ' + productLabel;
+      renderDashboard(currentDays);
+    }, 500);
+
+  } catch(e) {
+    showError('Errore: ' + e.message);
+    document.getElementById('progress-wrap').style.display = 'none';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Carica dati →';
   }
-  document.getElementById('tyRecap').innerHTML = rows
-    .map(r=>`<div class="ty-row"><span class="lb">${r.lb}</span><span class="vl${r.big?' big':''}">${r.vl}</span></div>`)
-    .join('');
-  document.getElementById('tyS').classList.add('on');
 }
 
-updateProg();
+function filterByDays(payments, days) {
+  if (days >= 9999) return payments;
+  const cutoff = Date.now() / 1000 - days * 86400;
+  return payments.filter(function(p) { return p.date >= cutoff; });
+}
+
+function fmt(cents, currency) {
+  return new Intl.NumberFormat('it-IT', { style: 'currency', currency: currency || CONFIG.currency || 'EUR' }).format(cents / 100);
+}
+
+function fmtDate(ts) {
+  return new Date(ts * 1000).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+function groupByMonth(payments) {
+  const map = {};
+  payments.forEach(function(p) {
+    const d = new Date(p.date * 1000);
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    map[key] = (map[key] || 0) + p.amount;
+  });
+  const sorted = Object.keys(map).sort();
+  return { labels: sorted, values: sorted.map(function(k) { return map[k] / 100; }) };
+}
+
+function renderDashboard(days) {
+  const filtered = filterByDays(allPayments, days);
+  const totalCents = filtered.reduce(function(s,p) { return s + p.amount; }, 0);
+  const total = totalCents / 100;
+  const quota = total * (CONFIG.quotaPct / 100);
+  const avg = filtered.length > 0 ? total / filtered.length : 0;
+  const monthly = groupByMonth(filtered);
+  const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+  const lineColor = isDark ? '#9FE1CB' : '#1a1a18';
+  const fillColor = isDark ? 'rgba(159,225,203,0.10)' : 'rgba(26,26,24,0.06)';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)';
+  const labelColor = isDark ? '#9a9893' : '#6b6a66';
+  const periodLabel = days >= 9999 ? 'tutto il periodo' : 'ultimi ' + days + ' giorni';
+
+  document.getElementById('dashboard-content').innerHTML =
+    '<div class="metrics-grid">' +
+      '<div class="metric-card"><div class="metric-label">Totale incassato</div><div class="metric-value">' + fmt(totalCents) + '</div><div class="metric-sub">' + filtered.length + ' pagamenti</div></div>' +
+      '<div class="metric-card highlight"><div class="metric-label">Quota partner (' + CONFIG.quotaPct + '%)</div><div class="metric-value">' + fmt(quota * 100) + '</div><div class="metric-sub">' + periodLabel + '</div></div>' +
+      '<div class="metric-card"><div class="metric-label">Valore medio</div><div class="metric-value">' + fmt(avg * 100) + '</div><div class="metric-sub">per transazione</div></div>' +
+    '</div>' +
+    '<div class="chart-section"><div class="chart-title">Andamento mensile</div><div style="position:relative;width:100%;height:200px;"><canvas id="revenue-chart"></canvas></div></div>' +
+    '<div class="table-section"><div class="table-header">Pagamenti</div><table><thead><tr><th>Data</th><th>Riferimento</th><th>Importo</th><th>Quota ' + CONFIG.quotaPct + '%</th></tr></thead><tbody>' +
+    (filtered.length === 0
+      ? '<tr class="empty-row"><td colspan="4">Nessun pagamento trovato per questo prodotto</td></tr>'
+      : filtered.slice(0,100).map(function(p) {
+          return '<tr><td>' + fmtDate(p.date) + '</td><td style="font-size:11px;color:var(--text-muted);">' + p.description + '</td><td>' + fmt(p.amount, p.currency) + '</td><td style="color:var(--green);">' + fmt(Math.round(p.amount * CONFIG.quotaPct / 100), p.currency) + '</td></tr>';
+        }).join('')
+    ) +
+    '</tbody></table></div>';
+
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  if (monthly.labels.length > 0) {
+    chartInstance = new Chart(document.getElementById('revenue-chart'), {
+      type: 'line',
+      data: {
+        labels: monthly.labels.map(function(l) {
+          const parts = l.split('-');
+          return new Date(parts[0], parts[1]-1).toLocaleDateString('it-IT', { month: 'short', year: '2-digit' });
+        }),
+        datasets: [{ data: monthly.values, borderColor: lineColor, backgroundColor: fillColor, borderWidth: 1.5, pointRadius: 3, pointBackgroundColor: lineColor, fill: true, tension: 0.3 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: function(ctx) { return fmt(ctx.parsed.y * 100); } } } },
+        scales: {
+          x: { grid: { color: gridColor }, ticks: { color: labelColor, font: { family: 'Courier New', size: 11 } } },
+          y: { grid: { color: gridColor }, ticks: { color: labelColor, font: { family: 'Courier New', size: 11 }, callback: function(v) { return fmt(v * 100); } } }
+        }
+      }
+    });
+  }
+}
+
+function setPeriod(days, btn) {
+  currentDays = days;
+  document.querySelectorAll('.period-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderDashboard(days);
+}
+
+function resetConfig() {
+  CONFIG = {}; allPayments = [];
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  document.getElementById('setup-section').style.display = 'block';
+  document.getElementById('dashboard-section').style.display = 'none';
+  document.getElementById('reset-btn').style.display = 'none';
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '0%';
+  document.getElementById('header-sub').textContent = "— configura l'accesso per iniziare";
+}
 </script>
 </body>
 </html>
